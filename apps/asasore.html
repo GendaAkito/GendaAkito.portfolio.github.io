@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>朝それお題生成マシーン</title>
+</head>
+
+<style>
+  body{
+    background-color: beige;
+    color: black;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    display: block;
+  }
+
+  .centering{
+    display: block;
+    width: 80%;
+    margin: 0 10%;
+    padding: 0;
+  }
+
+  .title{
+    margin-bottom: -10px;
+    display: block;
+    text-align: left;
+  }
+
+  .middle{
+    display:block;
+  }
+
+  fieldset{
+    width:420px;
+    display: inline-block;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  p{
+    font-size: 12px;
+    display: block;
+    text-align: left;
+  }
+
+  .main{
+    background: wheat;
+    margin: 10px 10%;
+    padding: 10px 0;
+    border: double 3px blue;
+  }
+
+  .stage{
+    color: maroon;
+    margin-top: 5px;
+    margin-bottom: 10px;
+  }
+
+  .credit{
+    font-size: 10px;
+    text-align: center;
+  }
+
+  .red{
+    color: red;
+  }
+
+</style>
+
+<body>
+
+<div class="centering">
+<h1 class="title">朝それお題生成マシーンへようこそ！</h1>
+<p>ページを保存すればオフラインでも動きます</p>
+
+<br>
+
+<div class="main"> 
+<h2 class="stage" id="stage_main">「<span id="front">あ</span>」で始まる<span id="back">美味しい</span>ものといえば？</h2>
+<h2 class="stage" id="stage_error" style="display:none; color:red;">エラー発生！読み込む句がありません…</h2>
+<button type="button" id="left_button">頭文字を再抽選</button>
+<button type="button" id="all_button">全混ぜ！</button>
+<button type="button" id="right_button">お題を再抽選</button>
+</div>
+
+<br>
+
+<div class="middle"> 
+
+<fieldset>
+  <legend>設定</legend>
+  <input type="checkbox" id="default_lv1_check" checked />
+  <label for="default_lv1_check">デフォルトのお題(やさしい)を含める</label><br>
+  <input type="checkbox" id="default_lv2_check" checked />
+  <label for="default_lv2_check">デフォルトのお題(ふつう)を含める</label><br>
+  <input type="checkbox" id="default_lv3_check" checked />
+  <label for="default_lv3_check">デフォルトのお題(むずかしい)を含める</label><br>
+  <input type="checkbox" id="your_check"/>
+  <label for="your_check">あなたの追加したお題を含める（下記参照）</label><br>
+  <br>
+  <input type="checkbox" id="head_normal" checked/>
+  <label for="head_normal">一般な頭文字を入れる</label><br>
+  <input type="checkbox" id="head_lv1"/>
+  <label for="head_lv1">あまりにもな頭文字Lv1を許容する</label><br>
+  <input type="checkbox" id="head_lv2"/>
+  <label for="head_lv2">あまりにもな頭文字Lv2を許容する</label><br>  
+  <input type="checkbox" id="head_lv3"/>
+  <label for="head_lv3">あまりにもな頭文字Lv3を許容する</label><br>
+</fieldset>
+
+<fieldset>
+  <legend>あなたのお題を追加する</legend>
+  <input type="text" id="you_wrote" placeholder="お題を入力">
+  <button type="button" id="you_button">追加</button>
+  <p>あなたの追加したお題↓<span class="red" id="you_error"></span></p>
+  <div id="you_show"></div>
+</fieldset>
+
+</div>
+<br>
+
+<details>
+<summary class="title"><h2>▼ お題を追加する機能の説明</h2></summary>
+<p>
+[お題を入力]欄に言葉を入力して、追加ボタンかEnterキーを押すことで、<br>
+「で始まる〇〇もの」の部分を自分で設定することができます！<br>
+細かい・賢い・憧れる……など、〇〇もの、に繋がり文章が成立するように記述してくださいね。<br>
+<br>
+追加したお題は[お題を入力]欄の下に、ボタンになって自動で記録されます。<br>
+ボタンを押すと、その追加したお題が一覧から削除され、上のジェネレータからも出てこなくなります。<br>
+ページ更新でも追加したお題は消失してしまうので、お気をつけください。<br>
+<br>
+再抽選ボタンは、「１つ前に出たお題が被らないように抽選する」機能がつけられているため、<br>
+追加したお題１つだけで再抽選を繰り返すと、エラーが出てしまいます。<br>
+２コ以上お題を追加するか、デフォルトのお題と織り交ぜてご活用ください。<br>
+</p>
+</details>
+
+<details>
+<summary class="title"><h2>▼ あまりにもな頭文字？</h2></summary>
+<p>
+設定メニューから「単語が無さすぎる」「あまりにも頭文字として不適当」なひらがなを排除することができます。<br>
+Lv1 → ぜ・ぱ・ぴ・ぷ・ぽ・る<br>
+Lv2 → ず・ぞ・ぬ・ぺ・ん<br>
+Lv3 → ぢ・づ・を・ゐ・ゑ<br>
+記事 <a href="https://qiita.com/youwht/items/7a4a280e4c49107260ed" target="_blank" rel="noopener noreferrer">「しりとり」徹底分析！最強キャラ（文字）解説＆５つの「驚愕」＆最長の増殖しりとりへ挑戦</a> による、<br>
+頭文字の頻度分析を参考にしています。（記事内ではしりとりでの"防御力"と記載）<br>
+</p>
+</details>
+
+<details>
+<summary class="title"><h2>▼ プログラム作成の目的と改善点</h2></summary>
+<p>
+このプログラムは、個人的に制作した「無限「風が吹けば桶屋が儲かるゲーム」お題出力マシーン」を改造したものです。<br>
+<img src="mugenkaze.png" title="風が吹けば桶屋が儲かるゲームのお題を出力している。" width="487" height="193"><br>
+<br>
+元ネタの<a href="https://www.youtube.com/watch?v=90x6IaDnlNE" target="_blank" rel="noopener noreferrer">QuizKnock様</a>を始め、インターネット上に既に多くの「朝それお題」ツールが存在していますが、<br>
+大学に電車通学をしている自分にとって、オフライン環境でも利用できるツールには意義があると感じ、<br>
+単一HTMLファイルとして保存するだけで動作する構成を意識して開発しました。<br>
+<br>
+プログラム自体は動くものの、プログラムの流用による煩雑な変数名、<br>
+innerHTMLによる記述はセキュリティ面に不安が残るなど、課題は尽きません。<br>
+これらを解決し、社会に通用するようなプログラム制作能力を鍛えていきたいと思います。<br>
+</p>
+</details>
+
+<br>
+<hr>
+<br>
+<div class="credit">
+（源田章人） 2026 <a href="index.html">トップページに戻る</a>
+</div>
+<br>
+<br>
+
+</body>
+
+
+<script>
+let initial_normal = ['あ','い','う','え','お',
+'か','き','く','け','こ',
+'さ','し','す','せ','そ',
+'た','ち','つ','て','と',
+'な','に',     'ね','の',
+'は','ひ','ふ','へ','ほ',
+'ま','み','む','め','も',
+'や','ゆ','よ',
+'ら','り',     'れ','ろ',
+'わ',
+'が','ぎ','ぐ','げ','ご',
+'ざ','じ',
+'だ','で','ど',];
+let initial_lv1 = ['る','ぜ','ぱ','ぴ','ぷ','ぽ'];
+let initial_lv2 = ['ぬ','ず','ぞ','ぺ','ん'];
+let initial_lv3 = ['ぢ','づ','を','ゐ','ゑ'];
+
+let default_text_lv1 = ['美味しい','赤色の','青色の','美しい','楽しい','大きい','とても小さい','かわいい','憧れる','プレゼントによさそうな','縁起が良い','暖かい','高級な'];
+let default_text_lv2 = ['カラフルな','金色の','輝いている','スピードが速い','ノリノリになれる','賢そうな','壊れやすい','切ない','体に良さそうな','何度も見たくなる','ここから遠くにある'];
+let default_text_lv3 = ['勇気のある','一見難しそうな','何度も見たくなる','細かい','あなたが大切にしている','熱狂的なファンが多い','冬によく見かける','大人より子供向けな','仕事に必要な','無限に続く'];
+let yours = [];
+
+let randnum_front;
+let text_front = "あ";
+let randnum_back;
+let text_back = "美味しい";
+
+let leftoptions;
+let rightoptions;
+
+let error_reload = false;
+
+let initial_legacy = "あ";
+let text_legacy = "美味しい";
+
+let frontdomains = document.getElementById('front');
+let backdomains = document.getElementById('back');
+
+document.getElementById('left_button').addEventListener('click', left);
+document.getElementById('all_button').addEventListener('click', all);
+document.getElementById('right_button').addEventListener('click', right);
+document.getElementById('you_wrote').addEventListener('keydown', textbox_enter_act);
+document.getElementById('you_button').addEventListener('click', you_f);
+
+function textbox_enter_act(pressed){
+    if(pressed.key == "Enter"){
+        you_f();
+    }
+}
+
+function you_f(){
+    let you_wrote = document.getElementById('you_wrote');
+    let you_value = you_wrote.value;
+    let you_error = document.getElementById('you_error');
+
+    you_value = you_value.replace(/\s+/g, "");
+    you_wrote.value = you_value;
+
+    if(you_value == ""){
+        you_error.textContent = "エラー発生…　空欄のままEnterキーを叩かないでください！"; 
+        return;
+    }
+
+    for(let i=0; i < yours.length; i++){
+        if(you_value == yours[i]){
+            you_error.textContent = "エラー発生…　同じ句がすでに登録されています"; 
+            return;
+        }
+    }
+
+    for(let i=0; i < 9; i++){
+        you_error.textContent = ""; 
+        yours.push(you_value);
+        you_showings();
+        return;
+    }
+}
+
+function you_delete(you_num){
+    let you_delete_items = yours.splice(you_num,1);
+    you_showings();
+    you_error.textContent = "要素\""+you_delete_items+"\"を削除しました。";
+}
+
+function you_showings(){
+    let you_show = document.getElementById('you_show');
+    let you_delete_button = "";
+    for(let i2=0; i2 < yours.length; i2++){
+        you_delete_button += "<input type=\"button\" onclick=\"you_delete("+i2+")\" value=\""+yours[i2]+"\">";
+    }
+    you_show.innerHTML = you_delete_button;
+}
+
+function wordoptions_receive(){
+
+    leftoptions = [document.getElementById("head_normal").checked,
+        document.getElementById("head_lv1").checked,
+        document.getElementById("head_lv2").checked,
+        document.getElementById("head_lv3").checked
+    ];
+
+    rightoptions = [document.getElementById("default_lv1_check").checked,
+        document.getElementById("default_lv2_check").checked,
+        document.getElementById("default_lv3_check").checked,
+        document.getElementById("your_check").checked
+    ];
+
+    error_reload = false;
+
+    if(rightoptions[0] == false && rightoptions[1] == false && rightoptions[2] == false && (rightoptions[3] == false || yours.length == 0)){
+        error_reload = true;
+        return;
+    }
+
+}
+
+function text_act(){
+    let stage_main_domains = document.getElementById('stage_main');
+    let stage_error_domains = document.getElementById('stage_error');
+
+    stage_main_domains.style.display = 'block';
+    stage_error_domains.style.display = 'none';
+
+    if(error_reload == true){
+        stage_main_domains.style.display = 'none';
+        stage_error_domains.style.display = 'block';
+    }else{
+        frontdomains.textContent = text_front;
+        backdomains.textContent = text_back;
+        initial_legacy = text_front;
+        text_legacy = text_back;
+    }
+
+}
+
+function left(){
+
+    wordoptions_receive();
+    if(error_reload == false){
+        leftcore();
+    }
+    text_act();
+
+}
+
+function right(){
+
+    wordoptions_receive();
+    if(error_reload == false){
+        rightcore();
+    }
+    text_act();
+
+}
+
+function all(){
+
+    wordoptions_receive();
+    if(error_reload == false){
+        leftcore();
+    }
+    if(error_reload == false){
+        rightcore();
+    }
+    text_act();
+
+}
+
+function leftcore(){
+
+    let leftbox = [];
+
+    if(leftoptions[0] == true){
+            leftbox = leftbox.concat(initial_normal);
+    }
+    if(leftoptions[1] == true){
+            leftbox = leftbox.concat(initial_lv1);
+    }
+    if(leftoptions[2] == true){
+            leftbox = leftbox.concat(initial_lv2);
+    }
+    if(leftoptions[3] == true){
+            leftbox = leftbox.concat(initial_lv3);
+    }
+
+    for(let i=0; i<leftbox.length; i++){
+        if(leftbox[i] == initial_legacy){
+            delete leftbox[i];
+        }
+    }
+
+    leftbox = leftbox.filter( ()=>true );
+
+    if(leftbox.length == 0){
+        error_reload = true;
+        return;
+    }
+    
+    randnum_front = Math.floor(Math.random()*leftbox.length);
+    text_front = leftbox[randnum_front];
+
+}
+
+function rightcore(){
+        
+    let rightbox = [];
+
+    if(rightoptions[0] == true){
+        rightbox = rightbox.concat(default_text_lv1);
+    }
+    if(rightoptions[1] == true){
+        rightbox = rightbox.concat(default_text_lv2);
+    }
+    if(rightoptions[2] == true){
+        rightbox = rightbox.concat(default_text_lv3);
+    }
+    if(rightoptions[3] == true){
+        rightbox = rightbox.concat(yours);
+    }
+
+    for(let i=0; i<rightbox.length; i++){
+        if(rightbox[i] == text_legacy){
+            delete rightbox[i];
+        }
+    }
+
+    rightbox = rightbox.filter( ()=>true );
+
+    if(rightbox.length == 0){
+        error_reload = true;
+        return;
+    }
+
+    randnum_back = Math.floor(Math.random()*rightbox.length);
+    text_back = rightbox[randnum_back];
+
+}
+</script>
